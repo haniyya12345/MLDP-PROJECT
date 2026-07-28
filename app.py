@@ -1,30 +1,8 @@
-import streamlit as st
-import pandas as pd
+import os
+
 import joblib
-
-
-# --------------------------------------------------
-# Load trained model
-# --------------------------------------------------
-@st.cache_resource
-def load_model():
-    return joblib.load("happiness_prediction_model.pkl")
-
-
-try:
-    model = load_model()
-
-except FileNotFoundError:
-    st.error(
-        "The model file could not be found. Make sure "
-        "'happiness_prediction_model.pkl' is in the same folder as app.py."
-    )
-    st.stop()
-
-except Exception as error:
-    st.error("The model could not be loaded.")
-    st.write(error)
-    st.stop()
+import pandas as pd
+import streamlit as st
 
 
 # --------------------------------------------------
@@ -33,8 +11,48 @@ except Exception as error:
 st.set_page_config(
     page_title="MindBalance Analytics",
     page_icon="🧠",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
+
+
+# --------------------------------------------------
+# File paths
+# --------------------------------------------------
+MODEL_PATH = "happiness_prediction_model.pkl"
+BRAIN_ICON_PATH = os.path.join("images", "brain_icon.png")
+BANNER_PATH = os.path.join("images", "wellness_banner.png")
+MEDITATION_IMAGE_PATH = os.path.join(
+    "images",
+    "meditation_illustration.png"
+)
+
+
+# --------------------------------------------------
+# Load trained model
+# --------------------------------------------------
+@st.cache_resource
+def load_model():
+    return joblib.load(MODEL_PATH)
+
+
+try:
+    model = load_model()
+
+except FileNotFoundError:
+    st.error(
+        "The trained model file could not be found. Make sure "
+        "'happiness_prediction_model.pkl' is in the same folder as app.py."
+    )
+    st.stop()
+
+except Exception as error:
+    st.error("The trained model could not be loaded.")
+
+    with st.expander("Technical details"):
+        st.write(error)
+
+    st.stop()
 
 
 # --------------------------------------------------
@@ -44,89 +62,106 @@ st.markdown(
     """
     <style>
     .stApp {
-        background-color: #f7f4fb;
+        background-color: #f8f5fc;
     }
 
     .block-container {
-        max-width: 1100px;
+        max-width: 1150px;
         padding-top: 2rem;
         padding-bottom: 3rem;
     }
 
-    .main-title {
-        padding: 30px;
-        border-radius: 20px;
+    .main-header {
+        padding: 28px 32px;
+        border-radius: 22px;
         background: linear-gradient(135deg, #4b1d72, #9b59b6);
         color: white;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 24px rgba(75, 29, 114, 0.18);
     }
 
-    .main-title h1 {
+    .main-header h1 {
         margin: 0;
         font-size: 40px;
     }
 
-    .main-title p {
-        margin-top: 10px;
+    .main-header p {
+        margin-top: 8px;
         margin-bottom: 0;
         font-size: 17px;
+        opacity: 0.95;
     }
 
-    .section-card {
-        background-color: white;
-        padding: 22px;
-        border-radius: 18px;
-        border: 1px solid #e7dff0;
-        margin-bottom: 20px;
-    }
-
-    div[data-testid="stMetric"] {
-        background-color: white;
-        border: 1px solid #ded2ea;
-        padding: 20px;
-        border-radius: 16px;
+    .section-heading {
+        margin-top: 8px;
+        margin-bottom: 12px;
+        font-size: 24px;
+        font-weight: 700;
+        color: #4b1d72;
     }
 
     div[data-testid="stForm"] {
         background-color: white;
-        padding: 24px;
-        border-radius: 18px;
-        border: 1px solid #e7dff0;
+        padding: 26px;
+        border-radius: 20px;
+        border: 1px solid #e4d9ef;
+        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    div[data-testid="stMetric"] {
+        background-color: white;
+        border: 1px solid #e4d9ef;
+        padding: 18px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     }
 
     .result-box {
-        background-color: white;
-        border-left: 6px solid #7d3c98;
-        padding: 22px;
-        border-radius: 14px;
-        margin-top: 18px;
+        background: linear-gradient(135deg, #f4ebfb, #ffffff);
+        border-left: 7px solid #8e44ad;
+        padding: 24px;
+        border-radius: 18px;
+        margin-top: 20px;
+        text-align: center;
+        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.05);
     }
 
     .result-label {
         color: #6b6470;
-        font-size: 15px;
-        margin-bottom: 4px;
+        font-size: 16px;
+        margin-bottom: 6px;
     }
 
     .result-score {
-        font-size: 42px;
-        font-weight: bold;
         color: #6c3483;
+        font-size: 46px;
+        font-weight: 800;
     }
 
-    .stButton > button {
+    .image-card {
+        background-color: white;
+        padding: 14px;
+        border-radius: 18px;
+        border: 1px solid #e4d9ef;
+        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .stButton > button,
+    div[data-testid="stFormSubmitButton"] > button {
         border-radius: 12px;
-        font-weight: bold;
-        padding: 12px;
+        font-weight: 700;
+        min-height: 46px;
     }
 
     div[data-baseweb="select"] > div {
         border-radius: 10px;
     }
 
-    .stSlider {
-        padding-top: 5px;
-        padding-bottom: 5px;
+    .footer-text {
+        text-align: center;
+        color: #756d7c;
+        font-size: 14px;
+        margin-top: 15px;
     }
     </style>
     """,
@@ -137,18 +172,43 @@ st.markdown(
 # --------------------------------------------------
 # Header
 # --------------------------------------------------
-st.markdown(
-    """
-    <div class="main-title">
-        <h1>🧠 MindBalance Analytics</h1>
-        <p>
-            Discover how your demographic and lifestyle patterns may relate
-            to your estimated happiness score.
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True
+header_left, header_right = st.columns(
+    [1, 6],
+    vertical_alignment="center"
 )
+
+with header_left:
+    if os.path.exists(BRAIN_ICON_PATH):
+        st.image(
+            BRAIN_ICON_PATH,
+            width=110
+        )
+    else:
+        st.markdown("## 🧠")
+
+with header_right:
+    st.markdown(
+        """
+        <div class="main-header">
+            <h1>MindBalance Analytics</h1>
+            <p>
+                Discover how your demographic and lifestyle patterns may
+                relate to your estimated happiness score.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# --------------------------------------------------
+# Banner
+# --------------------------------------------------
+if os.path.exists(BANNER_PATH):
+    st.image(
+        BANNER_PATH,
+        use_container_width=True
+    )
 
 st.info(
     "This prediction is intended for general wellness awareness only. "
@@ -157,16 +217,45 @@ st.info(
 
 
 # --------------------------------------------------
-# Input form
+# Introduction section
 # --------------------------------------------------
-st.subheader("Enter Your Details")
+intro_left, intro_right = st.columns(
+    [3, 1],
+    vertical_alignment="center"
+)
 
+with intro_left:
+    st.markdown(
+        """
+        <div class="section-heading">
+            Your Lifestyle Snapshot
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.write(
+        "Complete the form below using your current lifestyle information. "
+        "The machine learning model will estimate your Happiness Score on a "
+        "scale from 1 to 10."
+    )
+
+with intro_right:
+    if os.path.exists(MEDITATION_IMAGE_PATH):
+        st.image(
+            MEDITATION_IMAGE_PATH,
+            use_container_width=True
+        )
+
+
+# --------------------------------------------------
+# User input form
+# --------------------------------------------------
 with st.form("prediction_form"):
 
     left_column, right_column = st.columns(2)
 
     with left_column:
-
         country = st.selectbox(
             "Country",
             [
@@ -223,7 +312,6 @@ with st.form("prediction_form"):
         )
 
     with right_column:
-
         stress_level = st.selectbox(
             "Stress Level",
             [
@@ -267,7 +355,7 @@ with st.form("prediction_form"):
         )
 
     submitted = st.form_submit_button(
-        "Predict Happiness Score",
+        "🧠 Predict Happiness Score",
         type="primary",
         use_container_width=True
     )
@@ -351,8 +439,9 @@ if submitted:
             f"""
             <div class="result-box">
                 <div class="result-label">
-                    Estimated Happiness Score
+                    Your Estimated Happiness Score
                 </div>
+
                 <div class="result-score">
                     {prediction:.2f} / 10
                 </div>
@@ -365,7 +454,16 @@ if submitted:
             int(prediction * 10)
         )
 
-        summary_one, summary_two, summary_three = st.columns(3)
+        st.markdown(
+            """
+            <div class="section-heading">
+                Lifestyle Summary
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        summary_one, summary_two, summary_three, summary_four = st.columns(4)
 
         with summary_one:
             st.metric(
@@ -382,7 +480,13 @@ if submitted:
         with summary_three:
             st.metric(
                 label="Social Interaction",
-                value=f"{social_interaction:.1f} / 10"
+                value=f"{social_interaction:.1f}/10"
+            )
+
+        with summary_four:
+            st.metric(
+                label="Work Hours",
+                value=f"{work_hours}/week"
             )
 
         if prediction < 4:
@@ -434,7 +538,12 @@ if submitted:
 # --------------------------------------------------
 st.divider()
 
-st.caption(
-    "MindBalance Analytics | "
-    "Machine Learning for Developers Project"
+st.markdown(
+    """
+    <div class="footer-text">
+        MindBalance Analytics |
+        Machine Learning for Developers Project
+    </div>
+    """,
+    unsafe_allow_html=True
 )
