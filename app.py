@@ -60,111 +60,103 @@ except Exception as error:
 # --------------------------------------------------
 st.markdown(
     """
-    <style>
-    .stApp {
-        background-color: #f8f5fc;
-    }
+<style>
+.stApp {
+    background-color: #f8f5fc;
+}
 
-    .block-container {
-        max-width: 1150px;
-        padding-top: 2rem;
-        padding-bottom: 3rem;
-    }
+.block-container {
+    max-width: 1150px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
 
-    .main-header {
-        padding: 28px 32px;
-        border-radius: 22px;
-        background: linear-gradient(135deg, #4b1d72, #9b59b6);
-        color: white;
-        margin-bottom: 20px;
-        box-shadow: 0 8px 24px rgba(75, 29, 114, 0.18);
-    }
+.main-header {
+    padding: 28px 32px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #4b1d72, #9b59b6);
+    color: white;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 24px rgba(75, 29, 114, 0.18);
+}
 
-    .main-header h1 {
-        margin: 0;
-        font-size: 40px;
-    }
+.main-header h1 {
+    margin: 0;
+    font-size: 40px;
+}
 
-    .main-header p {
-        margin-top: 8px;
-        margin-bottom: 0;
-        font-size: 17px;
-        opacity: 0.95;
-    }
+.main-header p {
+    margin-top: 8px;
+    margin-bottom: 0;
+    font-size: 17px;
+    opacity: 0.95;
+}
 
-    .section-heading {
-        margin-top: 8px;
-        margin-bottom: 12px;
-        font-size: 24px;
-        font-weight: 700;
-        color: #4b1d72;
-    }
+.section-heading {
+    margin-top: 8px;
+    margin-bottom: 12px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #4b1d72;
+}
 
-    div[data-testid="stForm"] {
-        background-color: white;
-        padding: 26px;
-        border-radius: 20px;
-        border: 1px solid #e4d9ef;
-        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.04);
-    }
+div[data-testid="stForm"] {
+    background-color: white;
+    padding: 26px;
+    border-radius: 20px;
+    border: 1px solid #e4d9ef;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.04);
+}
 
-    div[data-testid="stMetric"] {
-        background-color: white;
-        border: 1px solid #e4d9ef;
-        padding: 18px;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    }
+div[data-testid="stMetric"] {
+    background-color: white;
+    border: 1px solid #e4d9ef;
+    padding: 18px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
 
-    .result-box {
-        background: linear-gradient(135deg, #f4ebfb, #ffffff);
-        border-left: 7px solid #8e44ad;
-        padding: 24px;
-        border-radius: 18px;
-        margin-top: 20px;
-        text-align: center;
-        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.05);
-    }
+.result-box {
+    background: linear-gradient(135deg, #f4ebfb, #ffffff);
+    border-left: 7px solid #8e44ad;
+    padding: 24px;
+    border-radius: 18px;
+    margin-top: 20px;
+    text-align: center;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.05);
+}
 
-    .result-label {
-        color: #6b6470;
-        font-size: 16px;
-        margin-bottom: 6px;
-    }
+.result-label {
+    color: #6b6470;
+    font-size: 16px;
+    margin-bottom: 6px;
+}
 
-    .result-score {
-        color: #6c3483;
-        font-size: 46px;
-        font-weight: 800;
-    }
+.result-score {
+    color: #6c3483;
+    font-size: 46px;
+    font-weight: 800;
+}
 
-    .image-card {
-        background-color: white;
-        padding: 14px;
-        border-radius: 18px;
-        border: 1px solid #e4d9ef;
-        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.04);
-    }
+.stButton > button,
+div[data-testid="stFormSubmitButton"] > button {
+    border-radius: 12px;
+    font-weight: 700;
+    min-height: 46px;
+}
 
-    .stButton > button,
-    div[data-testid="stFormSubmitButton"] > button {
-        border-radius: 12px;
-        font-weight: 700;
-        min-height: 46px;
-    }
+div[data-baseweb="select"] > div {
+    border-radius: 10px;
+}
 
-    div[data-baseweb="select"] > div {
-        border-radius: 10px;
-    }
-
-    .footer-text {
-        text-align: center;
-        color: #756d7c;
-        font-size: 14px;
-        margin-top: 15px;
-    }
-    </style>
-    """,
+.footer-text {
+    text-align: center;
+    color: #756d7c;
+    font-size: 14px;
+    margin-top: 15px;
+}
+</style>
+""",
     unsafe_allow_html=True
 )
 
@@ -189,14 +181,14 @@ with header_left:
 with header_right:
     st.markdown(
         """
-        <div class="main-header">
-            <h1>MindBalance Analytics</h1>
-            <p>
-                Discover how your demographic and lifestyle patterns may
-                relate to your estimated happiness score.
-            </p>
-        </div>
-        """,
+<div class="main-header">
+    <h1>MindBalance Analytics</h1>
+    <p>
+        Discover how your demographic and lifestyle patterns may relate
+        to your estimated happiness score.
+    </p>
+</div>
+""",
         unsafe_allow_html=True
     )
 
@@ -227,10 +219,10 @@ intro_left, intro_right = st.columns(
 with intro_left:
     st.markdown(
         """
-        <div class="section-heading">
-            Your Lifestyle Snapshot
-        </div>
-        """,
+<div class="section-heading">
+    Your Lifestyle Snapshot
+</div>
+""",
         unsafe_allow_html=True
     )
 
@@ -437,16 +429,16 @@ if submitted:
 
         st.markdown(
             f"""
-            <div class="result-box">
-                <div class="result-label">
-                    Your Estimated Happiness Score
-                </div>
+<div class="result-box">
+    <div class="result-label">
+        Your Estimated Happiness Score
+    </div>
 
-                <div class="result-score">
-                    {prediction:.2f} / 10
-                </div>
-            </div>
-            """,
+    <div class="result-score">
+        {prediction:.2f} / 10
+    </div>
+</div>
+""",
             unsafe_allow_html=True
         )
 
@@ -456,10 +448,10 @@ if submitted:
 
         st.markdown(
             """
-            <div class="section-heading">
-                Lifestyle Summary
-            </div>
-            """,
+<div class="section-heading">
+    Lifestyle Summary
+</div>
+""",
             unsafe_allow_html=True
         )
 
@@ -540,10 +532,10 @@ st.divider()
 
 st.markdown(
     """
-    <div class="footer-text">
-        MindBalance Analytics |
-        Machine Learning for Developers Project
-    </div>
-    """,
+<div class="footer-text">
+    MindBalance Analytics |
+    Machine Learning for Developers Project
+</div>
+""",
     unsafe_allow_html=True
 )
