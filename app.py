@@ -44,7 +44,8 @@ ILLUSTRATION_PATH = os.path.join(
 @st.cache_resource
 def load_prediction_files():
     """
-    Load the trained model and fitted preprocessing object.
+    Loads the trained machine learning model and
+    fitted preprocessing object.
     """
 
     loaded_model = joblib.load(MODEL_PATH)
@@ -61,7 +62,7 @@ try:
 
 except FileNotFoundError as error:
     st.error(
-        "The model or preprocessor could not be found. "
+        "The model or preprocessor file could not be found. "
         "Make sure both .pkl files are in the same folder as app.py."
     )
 
@@ -83,75 +84,93 @@ except Exception as error:
 
 
 # ==================================================
-# 4. CUSTOM CSS
+# 4. IDENTIFY MODEL NAME
+# ==================================================
+model_class_name = type(model).__name__
+
+model_name_mapping = {
+    "LogisticRegression": "Logistic Regression",
+    "RandomForestClassifier": "Random Forest Classifier",
+    "DecisionTreeClassifier": "Decision Tree Classifier",
+    "GradientBoostingClassifier": "Gradient Boosting Classifier"
+}
+
+display_model_name = model_name_mapping.get(
+    model_class_name,
+    model_class_name
+)
+
+
+# ==================================================
+# 5. CUSTOM CSS
 # ==================================================
 st.markdown(
     """
-<style>
+    <style>
 
-.stApp {
-    background-color: #f7f4fb;
-}
+    .stApp {
+        background-color: #f7f4fb;
+    }
 
-.block-container {
-    max-width: 1200px;
-    padding-top: 1.5rem;
-    padding-bottom: 3rem;
-}
+    .block-container {
+        max-width: 1200px;
+        padding-top: 1.5rem;
+        padding-bottom: 3rem;
+    }
 
-h1,
-h2,
-h3 {
-    color: #4b1d72;
-}
+    h1,
+    h2,
+    h3 {
+        color: #4b1d72;
+    }
 
-div[data-testid="stForm"] {
-    background-color: white;
-    padding: 27px;
-    border-radius: 20px;
-    border: 1px solid #e3d8ec;
-}
+    div[data-testid="stForm"] {
+        background-color: white;
+        padding: 27px;
+        border-radius: 20px;
+        border: 1px solid #e3d8ec;
+    }
 
-div[data-testid="stMetric"] {
-    background-color: white;
-    border: 1px solid #e3d8ec;
-    padding: 17px;
-    border-radius: 15px;
-}
+    div[data-testid="stMetric"] {
+        background-color: white;
+        border: 1px solid #e3d8ec;
+        padding: 17px;
+        border-radius: 15px;
+    }
 
-div[data-testid="stFormSubmitButton"] > button {
-    width: 100%;
-    min-height: 49px;
-    border-radius: 12px;
-    border: none;
-    background: linear-gradient(
-        135deg,
-        #55247b,
-        #9450ad
-    );
-    color: white;
-    font-size: 16px;
-    font-weight: 700;
-}
+    div[data-testid="stFormSubmitButton"] > button {
+        width: 100%;
+        min-height: 49px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(
+            135deg,
+            #55247b,
+            #9450ad
+        );
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+    }
 
-div[data-testid="stFormSubmitButton"] > button:hover {
-    background: linear-gradient(
-        135deg,
-        #431c61,
-        #793d91
-    );
-    color: white;
-    border: none;
-}
+    div[data-testid="stFormSubmitButton"] > button:hover {
+        background: linear-gradient(
+            135deg,
+            #431c61,
+            #793d91
+        );
+        color: white;
+        border: none;
+    }
 
-</style>
-""",
+    </style>
+    """,
     unsafe_allow_html=True
 )
 
 
 # ==================================================
-# 5. HEADER
+# 6. HEADER
 # ==================================================
 header_logo, header_text = st.columns(
     [0.13, 0.87],
@@ -159,15 +178,19 @@ header_logo, header_text = st.columns(
 )
 
 with header_logo:
+
     if os.path.exists(LOGO_PATH):
         st.image(
             LOGO_PATH,
             use_container_width=True
         )
+
     else:
         st.markdown("# 🧠")
 
+
 with header_text:
+
     st.title("StudentWell Analytics")
 
     st.write(
@@ -177,15 +200,17 @@ with header_text:
 
 
 # ==================================================
-# 6. BANNER IMAGE
+# 7. BANNER IMAGE
 # ==================================================
 if os.path.exists(BANNER_PATH):
+
     st.image(
         BANNER_PATH,
         use_container_width=True
     )
 
 else:
+
     st.warning(
         "Banner image missing. Place "
         "`student_wellness_banner.png` inside the images folder."
@@ -193,7 +218,7 @@ else:
 
 
 # ==================================================
-# 7. DISCLAIMER
+# 8. DISCLAIMER
 # ==================================================
 st.info(
     "Important notice: This application provides an estimated "
@@ -206,7 +231,7 @@ st.info(
 
 
 # ==================================================
-# 8. MAIN PAGE COLUMNS
+# 9. MAIN PAGE COLUMNS
 # ==================================================
 input_column, result_column = st.columns(
     [1.15, 0.85],
@@ -215,7 +240,7 @@ input_column, result_column = st.columns(
 
 
 # ==================================================
-# 9. STUDENT INPUT FORM
+# 10. STUDENT INPUT FORM
 # ==================================================
 with input_column:
 
@@ -236,6 +261,7 @@ with input_column:
         personal_left, personal_right = st.columns(2)
 
         with personal_left:
+
             gender = st.selectbox(
                 "Gender",
                 options=[
@@ -245,6 +271,7 @@ with input_column:
             )
 
         with personal_right:
+
             age = st.number_input(
                 "Age",
                 min_value=18,
@@ -259,6 +286,7 @@ with input_column:
 
         st.divider()
 
+
         # ------------------------------------------
         # Academic information
         # ------------------------------------------
@@ -267,15 +295,16 @@ with input_column:
         academic_left, academic_right = st.columns(2)
 
         with academic_left:
+
             academic_pressure = st.slider(
                 "Academic Pressure",
                 min_value=1,
                 max_value=5,
-                value=3,
-                help=(
-                    "1 means very low academic pressure and "
-                    "5 means very high academic pressure."
-                )
+                value=3
+            )
+
+            st.caption(
+                "1 = Least academic pressure  5 = Most academic pressure"
             )
 
             study_hours = st.slider(
@@ -286,30 +315,37 @@ with input_column:
                 step=0.5
             )
 
+            st.caption(
+                "0 = No study hours  12 = Maximum study hours"
+            )
+
+
         with academic_right:
+
             study_satisfaction = st.slider(
                 "Study Satisfaction",
                 min_value=1,
                 max_value=5,
-                value=3,
-                help=(
-                    "1 means very low study satisfaction and "
-                    "5 means very high study satisfaction."
-                )
+                value=3
+            )
+
+            st.caption(
+                "1 = Least satisfied  5 = Most satisfied"
             )
 
             financial_stress = st.slider(
                 "Financial Stress",
                 min_value=1,
                 max_value=5,
-                value=3,
-                help=(
-                    "1 means very low financial stress and "
-                    "5 means very high financial stress."
-                )
+                value=3
+            )
+
+            st.caption(
+                "1 = Least financial stress  5 = Most financial stress"
             )
 
         st.divider()
+
 
         # ------------------------------------------
         # Lifestyle information
@@ -319,6 +355,7 @@ with input_column:
         lifestyle_left, lifestyle_right = st.columns(2)
 
         with lifestyle_left:
+
             sleep_duration = st.selectbox(
                 "Sleep Duration",
                 options=[
@@ -330,6 +367,7 @@ with input_column:
             )
 
         with lifestyle_right:
+
             dietary_habits = st.selectbox(
                 "Dietary Habits",
                 options=[
@@ -341,6 +379,7 @@ with input_column:
 
         st.divider()
 
+
         # ------------------------------------------
         # Personal and family history
         # ------------------------------------------
@@ -349,6 +388,7 @@ with input_column:
         history_left, history_right = st.columns(2)
 
         with history_left:
+
             suicidal_thoughts = st.selectbox(
                 "Have you ever had suicidal thoughts?",
                 options=[
@@ -363,6 +403,7 @@ with input_column:
             )
 
         with history_right:
+
             family_history = st.selectbox(
                 "Family History of Mental Illness",
                 options=[
@@ -379,7 +420,7 @@ with input_column:
 
 
 # ==================================================
-# 10. RESULT PANEL BEFORE SUBMISSION
+# 11. RESULT PANEL BEFORE SUBMISSION
 # ==================================================
 with result_column:
 
@@ -388,12 +429,14 @@ with result_column:
     if not submitted:
 
         if os.path.exists(ILLUSTRATION_PATH):
+
             st.image(
                 ILLUSTRATION_PATH,
                 use_container_width=True
             )
 
         else:
+
             st.warning(
                 "Illustration missing. Place "
                 "`student_support_illustration.png` "
@@ -416,7 +459,7 @@ with result_column:
         )
 
         st.write(
-            "3. The trained Random Forest generates a prediction."
+            "3. The trained machine learning model generates a prediction."
         )
 
         st.write(
@@ -425,11 +468,12 @@ with result_column:
 
 
 # ==================================================
-# 11. GENERATE PREDICTION
+# 12. GENERATE PREDICTION
 # ==================================================
 if submitted:
 
     try:
+
         # ------------------------------------------
         # Feature engineering
         # ------------------------------------------
@@ -444,52 +488,71 @@ if submitted:
         )
 
         if study_hours <= 4:
+
             study_load_category = "Low"
 
         elif study_hours <= 8:
+
             study_load_category = "Moderate"
 
         else:
+
             study_load_category = "High"
 
 
         # ------------------------------------------
-        # Create the input DataFrame
+        # Create input DataFrame
         # ------------------------------------------
         input_data = pd.DataFrame(
             {
-                "Gender": [gender],
-                "Age": [float(age)],
+                "Gender": [
+                    gender
+                ],
+
+                "Age": [
+                    float(age)
+                ],
+
                 "Academic Pressure": [
                     float(academic_pressure)
                 ],
+
                 "Study Satisfaction": [
                     float(study_satisfaction)
                 ],
+
                 "Sleep Duration": [
                     sleep_duration
                 ],
+
                 "Dietary Habits": [
                     dietary_habits
                 ],
+
                 "Suicidal Thoughts": [
                     suicidal_thoughts
                 ],
+
                 "Study Hours": [
                     float(study_hours)
                 ],
+
                 "Financial Stress": [
                     float(financial_stress)
                 ],
+
                 "Family History of Mental Illness": [
                     family_history
                 ],
+
                 "Total Stress Score": [
                     float(total_stress_score)
                 ],
+
                 "Pressure Satisfaction Gap": [
                     float(pressure_satisfaction_gap)
                 ],
+
                 "Study Load Category": [
                     study_load_category
                 ]
@@ -515,7 +578,7 @@ if submitted:
 
 
         # ------------------------------------------
-        # Generate model prediction
+        # Generate prediction
         # ------------------------------------------
         predicted_class = int(
             model.predict(encoded_input)[0]
@@ -586,7 +649,7 @@ if submitted:
             # --------------------------------------
             # Probability section
             # --------------------------------------
-            st.subheader("At-Risk Probability")
+            st.subheader("Prediction Probabilities")
 
             st.progress(
                 min(
@@ -601,12 +664,14 @@ if submitted:
             probability_left, probability_right = st.columns(2)
 
             with probability_left:
+
                 st.metric(
                     "Lower-Risk Probability",
                     f"{lower_risk_probability * 100:.1f}%"
                 )
 
             with probability_right:
+
                 st.metric(
                     "At-Risk Probability",
                     f"{at_risk_probability * 100:.1f}%"
@@ -621,12 +686,14 @@ if submitted:
             metric_one, metric_two = st.columns(2)
 
             with metric_one:
+
                 st.metric(
                     "Total Stress Score",
                     f"{total_stress_score:.0f} / 10"
                 )
 
             with metric_two:
+
                 st.metric(
                     "Pressure-Satisfaction Gap",
                     f"{pressure_satisfaction_gap:+.0f}"
@@ -635,12 +702,14 @@ if submitted:
             metric_three, metric_four = st.columns(2)
 
             with metric_three:
+
                 st.metric(
                     "Study Load",
                     study_load_category
                 )
 
             with metric_four:
+
                 st.metric(
                     "Study Hours",
                     f"{study_hours:.1f} hours"
@@ -655,6 +724,7 @@ if submitted:
             note_displayed = False
 
             if suicidal_thoughts == "Yes":
+
                 note_displayed = True
 
                 st.error(
@@ -667,43 +737,50 @@ if submitted:
                 )
 
             if academic_pressure >= 4:
+
                 note_displayed = True
 
                 st.warning(
-                    "High academic pressure: Academic guidance, "
-                    "workload planning or counselling may be useful."
+                    "High academic pressure was reported. "
+                    "Academic guidance, workload planning or "
+                    "counselling may be useful."
                 )
 
             if financial_stress >= 4:
+
                 note_displayed = True
 
                 st.warning(
-                    "High financial stress: Financial-aid information, "
-                    "budgeting support or suitable student services "
-                    "may be relevant."
+                    "High financial stress was reported. "
+                    "Financial-aid information, budgeting support "
+                    "or suitable student services may be relevant."
                 )
 
             if study_satisfaction <= 2:
+
                 note_displayed = True
 
                 st.warning(
-                    "Low study satisfaction: Academic mentoring or a "
-                    "discussion about the student's learning experience "
-                    "may help identify concerns."
+                    "Low study satisfaction was reported. "
+                    "Academic mentoring or a discussion about the "
+                    "student's learning experience may help."
                 )
 
             if sleep_duration == "Less than 5 hours":
+
                 note_displayed = True
 
                 st.warning(
-                    "Limited sleep: Sleep habits may be worth discussing "
-                    "as part of a broader student-wellness conversation."
+                    "Limited sleep was reported. Sleep habits may "
+                    "be worth discussing as part of a broader "
+                    "student-wellness conversation."
                 )
 
             if not note_displayed:
+
                 st.success(
-                    "No additional screening notes were triggered by "
-                    "the submitted values."
+                    "No additional screening notes were triggered "
+                    "by the submitted values."
                 )
 
 
@@ -731,6 +808,7 @@ if submitted:
                     "Pressure-Satisfaction Gap",
                     "Study Load Category"
                 ],
+
                 "Submitted Value": [
                     gender,
                     int(age),
@@ -796,7 +874,7 @@ if submitted:
         ):
 
             st.write(
-                "**Final model:** Tuned Random Forest Classifier"
+                f"**Final model:** {display_model_name}"
             )
 
             st.write(
@@ -821,6 +899,7 @@ if submitted:
 
 
     except ValueError as error:
+
         st.error(
             "The input format does not match the trained model."
         )
@@ -828,7 +907,9 @@ if submitted:
         with st.expander("Technical details"):
             st.write(error)
 
+
     except Exception as error:
+
         st.error(
             "An unexpected error occurred while generating "
             "the prediction."
@@ -839,7 +920,7 @@ if submitted:
 
 
 # ==================================================
-# 12. FOOTER
+# 13. FOOTER
 # ==================================================
 st.divider()
 
