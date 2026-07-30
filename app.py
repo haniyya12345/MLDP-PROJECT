@@ -6,7 +6,7 @@ import streamlit as st
 
 
 # ==================================================
-# PAGE CONFIGURATION
+# 1. PAGE CONFIGURATION
 # ==================================================
 st.set_page_config(
     page_title="StudentWell Analytics",
@@ -17,7 +17,7 @@ st.set_page_config(
 
 
 # ==================================================
-# FILE PATHS
+# 2. FILE PATHS
 # ==================================================
 MODEL_PATH = "depression_prediction_model.pkl"
 PREPROCESSOR_PATH = "depression_preprocessor.pkl"
@@ -39,10 +39,15 @@ ILLUSTRATION_PATH = os.path.join(
 
 
 # ==================================================
-# LOAD MODEL AND PREPROCESSOR
+# 3. LOAD MODEL AND PREPROCESSOR
 # ==================================================
 @st.cache_resource
 def load_prediction_files():
+    """
+    Load the trained classification model and fitted
+    preprocessing object.
+    """
+
     loaded_model = joblib.load(MODEL_PATH)
 
     loaded_preprocessor = joblib.load(
@@ -69,7 +74,7 @@ except FileNotFoundError as error:
 except Exception as error:
     st.error(
         "The prediction files could not be loaded. "
-        "Check that they were exported correctly from the notebook."
+        "Check that they were saved correctly from the notebook."
     )
 
     with st.expander("Technical details"):
@@ -79,7 +84,7 @@ except Exception as error:
 
 
 # ==================================================
-# CUSTOM CSS
+# 4. CUSTOM CSS
 # ==================================================
 st.markdown(
     """
@@ -95,49 +100,32 @@ st.markdown(
     padding-bottom: 3rem;
 }
 
-.header-container {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 28px 32px;
-    border-radius: 22px;
+/* Main headings */
+
+h1 {
+    color: #4b1d72;
+}
+
+h2,
+h3 {
+    color: #4b1d72;
+}
+
+/* Header */
+
+.header-wrapper {
     background: linear-gradient(
         135deg,
         #452067,
         #7b3fa0,
         #a967bd
     );
-    color: white;
+    border-radius: 22px;
+    padding: 20px;
     margin-bottom: 20px;
 }
 
-.header-logo {
-    width: 90px;
-    height: 90px;
-    object-fit: contain;
-    border-radius: 18px;
-}
-
-.header-text h1 {
-    margin: 0;
-    font-size: 42px;
-    font-weight: 750;
-}
-
-.header-text p {
-    margin-top: 8px;
-    margin-bottom: 0;
-    font-size: 17px;
-    line-height: 1.55;
-}
-
-.section-heading {
-    margin-top: 8px;
-    margin-bottom: 12px;
-    font-size: 25px;
-    font-weight: 750;
-    color: #4b1d72;
-}
+/* Information cards */
 
 .information-card {
     background-color: white;
@@ -148,6 +136,8 @@ st.markdown(
     line-height: 1.65;
 }
 
+/* Form */
+
 div[data-testid="stForm"] {
     background-color: white;
     padding: 27px;
@@ -155,12 +145,16 @@ div[data-testid="stForm"] {
     border: 1px solid #e3d8ec;
 }
 
+/* Metrics */
+
 div[data-testid="stMetric"] {
     background-color: white;
     border: 1px solid #e3d8ec;
     padding: 17px;
     border-radius: 15px;
 }
+
+/* Lower-risk result */
 
 .lower-risk-box {
     background-color: #eef9f2;
@@ -177,6 +171,8 @@ div[data-testid="stMetric"] {
     margin-bottom: 8px;
 }
 
+/* At-risk result */
+
 .at-risk-box {
     background-color: #fff1f3;
     border-left: 7px solid #c74765;
@@ -192,12 +188,16 @@ div[data-testid="stMetric"] {
     margin-bottom: 8px;
 }
 
+/* Probability number */
+
 .probability-number {
     font-size: 38px;
     font-weight: 800;
     color: #6f2c91;
     margin: 10px 0;
 }
+
+/* Screening notes */
 
 .warning-card {
     background-color: #fff8e7;
@@ -217,15 +217,7 @@ div[data-testid="stMetric"] {
     line-height: 1.6;
 }
 
-.footer {
-    text-align: center;
-    margin-top: 38px;
-    padding-top: 20px;
-    border-top: 1px solid #ddd3e6;
-    color: #6d6174;
-    font-size: 14px;
-    line-height: 1.6;
-}
+/* Submit button */
 
 div[data-testid="stFormSubmitButton"] > button {
     width: 100%;
@@ -252,6 +244,18 @@ div[data-testid="stFormSubmitButton"] > button:hover {
     border: none;
 }
 
+/* Footer */
+
+.footer {
+    text-align: center;
+    margin-top: 38px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd3e6;
+    color: #6d6174;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
 </style>
 """,
     unsafe_allow_html=True
@@ -259,58 +263,43 @@ div[data-testid="stFormSubmitButton"] > button:hover {
 
 
 # ==================================================
-# HEADER WITH LOGO
+# 5. HEADER
 # ==================================================
-if os.path.exists(LOGO_PATH):
+st.markdown(
+    '<div class="header-wrapper">',
+    unsafe_allow_html=True
+)
 
-    logo_column, title_column = st.columns(
-        [0.15, 0.85],
-        vertical_alignment="center"
-    )
+header_logo, header_text = st.columns(
+    [0.15, 0.85],
+    vertical_alignment="center"
+)
 
-    with logo_column:
+with header_logo:
+    if os.path.exists(LOGO_PATH):
         st.image(
             LOGO_PATH,
             use_container_width=True
         )
+    else:
+        st.markdown("# 🧠")
 
-    with title_column:
-        st.markdown(
-            """
-<div class="header-container">
-    <div class="header-text">
-        <h1>StudentWell Analytics</h1>
+with header_text:
+    st.title("StudentWell Analytics")
 
-        <p>
-            AI-powered student-wellness screening for early insights,
-            better support and stronger student outcomes.
-        </p>
-    </div>
-</div>
-""",
-            unsafe_allow_html=True
-        )
-
-else:
-    st.markdown(
-        """
-<div class="header-container">
-    <div class="header-text">
-        <h1>🧠 StudentWell Analytics</h1>
-
-        <p>
-            AI-powered student-wellness screening for early insights,
-            better support and stronger student outcomes.
-        </p>
-    </div>
-</div>
-""",
-        unsafe_allow_html=True
+    st.write(
+        "AI-powered student-wellness screening for early insights, "
+        "better support and stronger student outcomes."
     )
+
+st.markdown(
+    "</div>",
+    unsafe_allow_html=True
+)
 
 
 # ==================================================
-# BANNER IMAGE
+# 6. BANNER IMAGE
 # ==================================================
 if os.path.exists(BANNER_PATH):
     st.image(
@@ -321,30 +310,24 @@ if os.path.exists(BANNER_PATH):
 else:
     st.warning(
         "Banner image missing. Place "
-        "student_wellness_banner.png inside the images folder."
+        "`student_wellness_banner.png` inside the images folder."
     )
 
 
 # ==================================================
-# DISCLAIMER
+# 7. DISCLAIMER
 # ==================================================
-st.markdown(
-    """
-<div class="information-card">
-    <strong>Important notice:</strong>
-    This application provides an estimated risk classification
-    produced by a student machine learning project. It does not
-    diagnose depression and must not replace assessment by a
-    qualified mental-health professional. Results should only
-    support further screening and student-wellness discussions.
-</div>
-""",
-    unsafe_allow_html=True
+st.info(
+    "Important notice: This application provides an estimated risk "
+    "classification produced by a student machine learning project. "
+    "It does not diagnose depression and must not replace assessment "
+    "by a qualified mental-health professional. Results should only "
+    "support further screening and student-wellness discussions."
 )
 
 
 # ==================================================
-# MAIN COLUMNS
+# 8. MAIN COLUMNS
 # ==================================================
 input_column, result_column = st.columns(
     [1.15, 0.85],
@@ -353,18 +336,11 @@ input_column, result_column = st.columns(
 
 
 # ==================================================
-# STUDENT INPUT FORM
+# 9. STUDENT INPUT FORM
 # ==================================================
 with input_column:
 
-    st.markdown(
-        """
-<div class="section-heading">
-    Student Information
-</div>
-""",
-        unsafe_allow_html=True
-    )
+    st.header("Student Information")
 
     st.write(
         "Enter the student's details below. "
@@ -373,6 +349,9 @@ with input_column:
 
     with st.form("student_wellness_form"):
 
+        # ------------------------------------------
+        # Personal information
+        # ------------------------------------------
         st.subheader("👤 Personal Information")
 
         personal_left, personal_right = st.columns(2)
@@ -392,11 +371,18 @@ with input_column:
                 min_value=18,
                 max_value=34,
                 value=21,
-                step=1
+                step=1,
+                help=(
+                    "The training dataset contains students "
+                    "between 18 and 34 years old."
+                )
             )
 
         st.divider()
 
+        # ------------------------------------------
+        # Academic information
+        # ------------------------------------------
         st.subheader("📚 Academic Information")
 
         academic_left, academic_right = st.columns(2)
@@ -408,8 +394,8 @@ with input_column:
                 max_value=5,
                 value=3,
                 help=(
-                    "1 means very low pressure and "
-                    "5 means very high pressure."
+                    "1 means very low academic pressure and "
+                    "5 means very high academic pressure."
                 )
             )
 
@@ -428,8 +414,8 @@ with input_column:
                 max_value=5,
                 value=3,
                 help=(
-                    "1 means very low satisfaction and "
-                    "5 means very high satisfaction."
+                    "1 means very low study satisfaction and "
+                    "5 means very high study satisfaction."
                 )
             )
 
@@ -439,13 +425,16 @@ with input_column:
                 max_value=5,
                 value=3,
                 help=(
-                    "1 means very low stress and "
-                    "5 means very high stress."
+                    "1 means very low financial stress and "
+                    "5 means very high financial stress."
                 )
             )
 
         st.divider()
 
+        # ------------------------------------------
+        # Lifestyle information
+        # ------------------------------------------
         st.subheader("🌙 Lifestyle Information")
 
         lifestyle_left, lifestyle_right = st.columns(2)
@@ -473,6 +462,9 @@ with input_column:
 
         st.divider()
 
+        # ------------------------------------------
+        # Personal and family history
+        # ------------------------------------------
         st.subheader("💬 Personal and Family History")
 
         history_left, history_right = st.columns(2)
@@ -483,7 +475,11 @@ with input_column:
                 options=[
                     "No",
                     "Yes"
-                ]
+                ],
+                help=(
+                    "This is a sensitive field and should only be "
+                    "collected with appropriate privacy procedures."
+                )
             )
 
         with history_right:
@@ -503,18 +499,11 @@ with input_column:
 
 
 # ==================================================
-# RESULT PANEL BEFORE SUBMISSION
+# 10. RESULT PANEL BEFORE SUBMISSION
 # ==================================================
 with result_column:
 
-    st.markdown(
-        """
-<div class="section-heading">
-    Prediction Result
-</div>
-""",
-        unsafe_allow_html=True
-    )
+    st.header("Prediction Result")
 
     if not submitted:
 
@@ -527,40 +516,43 @@ with result_column:
         else:
             st.warning(
                 "Illustration missing. Place "
-                "student_support_illustration.png "
+                "`student_support_illustration.png` "
                 "inside the images folder."
             )
 
-        st.markdown(
-            """
-<div class="information-card">
-    <h3 style="color:#4b1d72; margin-top:0;">
-        How the screening works
-    </h3>
+        st.subheader("How the screening works")
 
-    <p>
-        Complete the form and select
-        <strong>Estimate Student Risk</strong>.
-    </p>
+        st.write(
+            "Complete the form and select "
+            "**Estimate Student Risk**."
+        )
 
-    <ol>
-        <li>The engineered features are recreated.</li>
-        <li>The saved preprocessing is applied.</li>
-        <li>The trained Random Forest generates a prediction.</li>
-        <li>The predicted class and probability are displayed.</li>
-    </ol>
-</div>
-""",
-            unsafe_allow_html=True
+        st.write(
+            "1. The application recreates the engineered features."
+        )
+
+        st.write(
+            "2. The saved preprocessing and One-Hot Encoding are applied."
+        )
+
+        st.write(
+            "3. The trained Random Forest generates a prediction."
+        )
+
+        st.write(
+            "4. The predicted class and probability are displayed."
         )
 
 
 # ==================================================
-# GENERATE PREDICTION
+# 11. GENERATE PREDICTION
 # ==================================================
 if submitted:
 
     try:
+        # ------------------------------------------
+        # Recreate engineered features
+        # ------------------------------------------
         total_stress_score = (
             academic_pressure
             + financial_stress
@@ -581,6 +573,9 @@ if submitted:
             study_load_category = "High"
 
 
+        # ------------------------------------------
+        # Create input DataFrame
+        # ------------------------------------------
         input_data = pd.DataFrame(
             {
                 "Gender": [gender],
@@ -622,6 +617,9 @@ if submitted:
         )
 
 
+        # ------------------------------------------
+        # Apply preprocessing
+        # ------------------------------------------
         encoded_input_array = preprocessor.transform(
             input_data
         )
@@ -636,6 +634,9 @@ if submitted:
         )
 
 
+        # ------------------------------------------
+        # Generate prediction and probabilities
+        # ------------------------------------------
         predicted_class = int(
             model.predict(encoded_input)[0]
         )
@@ -657,6 +658,9 @@ if submitted:
         )
 
 
+        # ------------------------------------------
+        # Display result
+        # ------------------------------------------
         with result_column:
 
             if predicted_class == 1:
@@ -684,9 +688,9 @@ if submitted:
                 )
 
                 st.warning(
-                    "This result is not a diagnosis. "
-                    "Further discussion or screening by an "
-                    "appropriate professional may be beneficial."
+                    "This result is not a diagnosis. Further discussion "
+                    "or screening by an appropriate professional may "
+                    "be beneficial."
                 )
 
             else:
@@ -714,12 +718,16 @@ if submitted:
                 )
 
                 st.info(
-                    "A lower-risk prediction does not guarantee "
-                    "that a student is not experiencing distress."
+                    "A lower-risk prediction does not guarantee that "
+                    "a student is not experiencing distress. Students "
+                    "should still seek support whenever they need it."
                 )
 
 
-            st.markdown("#### At-Risk Probability")
+            # --------------------------------------
+            # Probability section
+            # --------------------------------------
+            st.subheader("At-Risk Probability")
 
             st.progress(
                 min(
@@ -746,7 +754,10 @@ if submitted:
                 )
 
 
-            st.markdown("#### Student Indicator Summary")
+            # --------------------------------------
+            # Student indicator summary
+            # --------------------------------------
+            st.subheader("Student Indicator Summary")
 
             metric_one, metric_two = st.columns(2)
 
@@ -777,86 +788,71 @@ if submitted:
                 )
 
 
-            st.markdown("#### Screening Notes")
+            # --------------------------------------
+            # Screening notes
+            # --------------------------------------
+            st.subheader("Screening Notes")
+
+            note_displayed = False
 
             if suicidal_thoughts == "Yes":
+                note_displayed = True
 
-                st.markdown(
-                    """
-<div class="urgent-card">
-    <strong>Immediate human follow-up is important.</strong>
-    A reported history of suicidal thoughts is a serious
-    indicator regardless of the model prediction. The student
-    should be supported through established professional and
-    safeguarding procedures.
-</div>
-""",
-                    unsafe_allow_html=True
+                st.error(
+                    "Immediate human follow-up is important. A reported "
+                    "history of suicidal thoughts is a serious indicator "
+                    "regardless of the model prediction. The student "
+                    "should be supported through established professional "
+                    "and safeguarding procedures."
                 )
 
             if academic_pressure >= 4:
+                note_displayed = True
 
-                st.markdown(
-                    """
-<div class="warning-card">
-    <strong>High academic pressure:</strong>
-    Academic guidance, workload planning or counselling
-    may be useful areas for follow-up.
-</div>
-""",
-                    unsafe_allow_html=True
+                st.warning(
+                    "High academic pressure: Academic guidance, workload "
+                    "planning or counselling may be useful."
                 )
 
             if financial_stress >= 4:
+                note_displayed = True
 
-                st.markdown(
-                    """
-<div class="warning-card">
-    <strong>High financial stress:</strong>
-    Financial-aid information, budgeting support or suitable
-    student services may be relevant.
-</div>
-""",
-                    unsafe_allow_html=True
+                st.warning(
+                    "High financial stress: Financial-aid information, "
+                    "budgeting support or suitable student services may "
+                    "be relevant."
                 )
 
             if study_satisfaction <= 2:
+                note_displayed = True
 
-                st.markdown(
-                    """
-<div class="warning-card">
-    <strong>Low study satisfaction:</strong>
-    Academic mentoring or a discussion about the student's
-    learning experience may help identify concerns.
-</div>
-""",
-                    unsafe_allow_html=True
+                st.warning(
+                    "Low study satisfaction: Academic mentoring or a "
+                    "discussion about the student's learning experience "
+                    "may help identify concerns."
                 )
 
             if sleep_duration == "Less than 5 hours":
+                note_displayed = True
 
-                st.markdown(
-                    """
-<div class="warning-card">
-    <strong>Limited sleep:</strong>
-    Sleep habits may be worth discussing as part of a broader
-    student-wellness conversation.
-</div>
-""",
-                    unsafe_allow_html=True
+                st.warning(
+                    "Limited sleep: Sleep habits may be worth discussing "
+                    "as part of a broader student-wellness conversation."
+                )
+
+            if not note_displayed:
+                st.success(
+                    "No additional screening notes were triggered by "
+                    "the submitted values."
                 )
 
 
-        st.markdown("---")
+        # ------------------------------------------
+        # Submitted information
+        # ------------------------------------------
+        st.divider()
 
-        st.markdown(
-            """
-<div class="section-heading">
-    Submitted Information
-</div>
-""",
-            unsafe_allow_html=True
-        )
+        st.header("Submitted Information")
 
         display_data = pd.DataFrame(
             {
@@ -900,38 +896,41 @@ if submitted:
         )
 
 
+        # ------------------------------------------
+        # Interpretation
+        # ------------------------------------------
         with st.expander(
             "How should this prediction be interpreted?"
         ):
 
             st.write(
-                """
-                The model estimates the probability of the class
-                labelled as depression in the training dataset.
-                A higher probability means that the submitted
-                combination of indicators is more similar to
-                records labelled Yes.
-                """
+                "The model estimates the probability of the class "
+                "labelled as depression in the training dataset."
             )
 
             st.write(
-                """
-                The result cannot confirm whether a student has
-                depression. A qualified person should consider the
-                output together with a confidential conversation
-                and other relevant information.
-                """
+                "A higher probability means that the submitted "
+                "combination of indicators is more similar to records "
+                "labelled Yes."
             )
 
             st.write(
-                """
-                The model was developed using 502 records.
-                Its performance may change when used with students
-                from other institutions or backgrounds.
-                """
+                "The result cannot confirm whether a student has "
+                "depression. A qualified person should consider the "
+                "output together with a confidential conversation and "
+                "other relevant information."
+            )
+
+            st.write(
+                "The model was developed using 502 records. Its "
+                "performance may change when used with students from "
+                "other institutions or backgrounds."
             )
 
 
+        # ------------------------------------------
+        # Model information
+        # ------------------------------------------
         with st.expander(
             "Model and preprocessing information"
         ):
@@ -962,7 +961,6 @@ if submitted:
 
 
     except ValueError as error:
-
         st.error(
             "The input format does not match the trained model."
         )
@@ -971,7 +969,6 @@ if submitted:
             st.write(error)
 
     except Exception as error:
-
         st.error(
             "An unexpected error occurred while generating "
             "the prediction."
@@ -982,7 +979,7 @@ if submitted:
 
 
 # ==================================================
-# FOOTER
+# 12. FOOTER
 # ==================================================
 st.markdown(
     """
