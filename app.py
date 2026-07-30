@@ -61,6 +61,7 @@ try:
     model, preprocessor = load_prediction_files()
 
 except FileNotFoundError as error:
+
     st.error(
         "The model or preprocessor file could not be found. "
         "Make sure both .pkl files are in the same folder as app.py."
@@ -72,6 +73,7 @@ except FileNotFoundError as error:
     st.stop()
 
 except Exception as error:
+
     st.error(
         "The prediction files could not be loaded. "
         "Check that they were saved correctly from the notebook."
@@ -102,15 +104,14 @@ display_model_name = model_name_mapping.get(
 
 
 # ==================================================
-# 5. CUSTOM CSS
+# 5. THEME-FRIENDLY CSS
 # ==================================================
+# Important:
+# This CSS only controls spacing, borders and sizing.
+# It does not force a light background or dark text.
 st.markdown(
     """
     <style>
-
-    .stApp {
-        background-color: #f7f4fb;
-    }
 
     .block-container {
         max-width: 1200px;
@@ -118,24 +119,24 @@ st.markdown(
         padding-bottom: 3rem;
     }
 
-    h1,
-    h2,
-    h3 {
-        color: #4b1d72;
-    }
-
     div[data-testid="stForm"] {
-        background-color: white;
         padding: 27px;
         border-radius: 20px;
-        border: 1px solid #e3d8ec;
+        border: 1px solid rgba(128, 128, 128, 0.30);
     }
 
     div[data-testid="stMetric"] {
-        background-color: white;
-        border: 1px solid #e3d8ec;
         padding: 17px;
         border-radius: 15px;
+        border: 1px solid rgba(128, 128, 128, 0.30);
+    }
+
+    div[data-testid="stWidgetLabel"] p {
+        font-weight: 600;
+    }
+
+    div[data-testid="stCaptionContainer"] p {
+        opacity: 0.75;
     }
 
     div[data-testid="stFormSubmitButton"] > button {
@@ -145,10 +146,10 @@ st.markdown(
         border: none;
         background: linear-gradient(
             135deg,
-            #55247b,
-            #9450ad
+            #6d28d9,
+            #a855f7
         );
-        color: white;
+        color: #ffffff;
         font-size: 16px;
         font-weight: 700;
     }
@@ -156,10 +157,10 @@ st.markdown(
     div[data-testid="stFormSubmitButton"] > button:hover {
         background: linear-gradient(
             135deg,
-            #431c61,
-            #793d91
+            #5b21b6,
+            #9333ea
         );
-        color: white;
+        color: #ffffff;
         border: none;
     }
 
@@ -180,12 +181,14 @@ header_logo, header_text = st.columns(
 with header_logo:
 
     if os.path.exists(LOGO_PATH):
+
         st.image(
             LOGO_PATH,
             use_container_width=True
         )
 
     else:
+
         st.markdown("# 🧠")
 
 
@@ -588,12 +591,18 @@ if submitted:
             model.predict_proba(encoded_input)[0]
         )
 
+        # Find probability according to actual model classes.
+        model_classes = list(model.classes_)
+
+        lower_risk_class_index = model_classes.index(0)
+        at_risk_class_index = model_classes.index(1)
+
         lower_risk_probability = float(
-            class_probabilities[0]
+            class_probabilities[lower_risk_class_index]
         )
 
         at_risk_probability = float(
-            class_probabilities[1]
+            class_probabilities[at_risk_class_index]
         )
 
         probability_percentage = (
@@ -860,8 +869,8 @@ if submitted:
             )
 
             st.write(
-                "The model was developed using 502 records. Its "
-                "performance may change when used with students "
+                "The model was developed using the assignment dataset. "
+                "Its performance may change when used with students "
                 "from other institutions or backgrounds."
             )
 
